@@ -10,7 +10,7 @@
 
 class EventFactory {
 public:
-	virtual ~EventFactory();
+	virtual ~EventFactory() = default;
 	virtual StockEvent* createEvent(const std::string &msg) = 0;
 };
 
