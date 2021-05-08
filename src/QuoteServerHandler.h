@@ -1,44 +1,47 @@
-/*
- * QuoteServerHanlder.h
- *
- *  Created on: Apr 30, 2021
- *      Author: titusen
- */
+#pragma once
 
-#ifndef SRC_QUOTESERVERHANDLER_H_
-#define SRC_QUOTESERVERHANDLER_H_
+#include <wangle/channel/Handler.h>
+#include <folly/ProducerConsumerQueue.h>
+#include <wangle/channel/EventBaseHandler.h>
+#include <wangle/channel/AsyncSocketHandler.h>
+#include <wangle/codec/LineBasedFrameDecoder.h>
+#include <wangle/codec/StringCodec.h>
 
-#include "QuoteAnalisys.h"
-#include <thrift/protocol/TBinaryProtocol.h>
-#include <thrift/server/TSimpleServer.h>
-#include <thrift/transport/TServerSocket.h>
-#include <thrift/transport/TBufferTransports.h>
+#include <iostream>
+#include <atomic>
 
-using namespace ::apache::thrift;
-using namespace ::apache::thrift::protocol;
-using namespace ::apache::thrift::transport;
-using namespace ::apache::thrift::server;
+#include "QuoteServer.h"
 
-class QuoteServerHandler : virtual public QuoteAnalisysIf {
- public:
-  QuoteServerHandler() {
-    // Your initialization goes here
-  }
+//class QuoteServer;
 
-  void subscribe(const SymbolT& symbol) {
-    // Your implementation goes here
-    printf("subscribe\n");
-  }
+class QuoteServerHandler: public wangle::HandlerAdapter<std::string> {
+public:
+	QuoteServerHandler(QuoteServer *server) : server(server) {}
+	void read(Context* ctx, std::string msg) override;
+    void transportActive(Context *ctx) override;
+    void transportInactive(Context *ctx) override;
+    void readException(Context *ctx, folly::exception_wrapper e) override;
+private:
+    QuoteServer *server;
+};
 
-  void getTrade(TradeT& _return) {
-    // Your implementation goes here
-    printf("getTrade\n");
-  }
+class QuoteServerHandlerFactory: public wangle::PipelineFactory<QueuePipeline> {
+public:
+	QuoteServerHandlerFactory(QuoteServer *server): server(server) {
+    }
+	QueuePipeline::Ptr newPipeline(
+            std::shared_ptr<folly::AsyncTransportWrapper> sock) override {
+        auto pipeline = QueuePipeline::create();
+        pipeline->addBack(wangle::AsyncSocketHandler(sock));
+        pipeline->addBack(wangle::EventBaseHandler());
+        pipeline->addBack(wangle::LineBasedFrameDecoder(8192));
+        pipeline->addBack(wangle::StringCodec());
+        pipeline->addBack(QuoteServerHandler(server));
+        pipeline->finalize();
 
-  void getLimitOrderBook(LimitOrderBookT& _return) {
-    // Your implementation goes here
-    printf("getLimitOrderBook\n");
-  }
+        return pipeline;
+    }
+private:
+	QuoteServer *server;
 
 };
-#endif /* SRC_QUOTESERVERHANDLER_H_ */

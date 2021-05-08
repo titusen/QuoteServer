@@ -20,6 +20,11 @@ void QuoteEngine::onSubscriptionReceived(const
 void QuoteEngine::onEvent(StockEvent *e) {
 	auto &v = symbolToConnections[e->getSymbol()];
 	for (auto it : v) {
-		e->sendByConnection(it);
+		it->sendStockEvent(e);
 	}
+}
+
+void QuoteEngine::connect() {
+	quoteProvider->setHandler(this);
+	quoteProvider->connect();
 }

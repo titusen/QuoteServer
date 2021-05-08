@@ -6,18 +6,17 @@
  */
 
 #include "Trade.h"
+#include "SubscriptionClientConnection.h"
 
 Trade::~Trade() {
 	// TODO Auto-generated destructor stub
 }
 
-Trade::Trade(std::string &&symbol, long price, long amount) : symbol(symbol), price(price), amount(amount) {
+Trade::Trade(std::string &&json, std::string &&symbol, long price, long amount) : json(json), symbol(symbol), price(price), amount(amount) {
 }
 
-void Trade::sendByConnection(
-		SubscriptionClientConnection *subscribtionClientConnection) {
-
-	subscribtionClientConnection->onTrade(this);
+const std::string& Trade::getJSON() {
+	return json;
 }
 
 const std::string& Trade::getSymbol() {

@@ -8,16 +8,15 @@
 #ifndef SUBSCRIPTIONCLIENTCONNECTION_H_
 #define SUBSCRIPTIONCLIENTCONNECTION_H_
 
-class Trade;
-class LimitOrderBook;
+#include "Trade.h"
+#include "LimitOrderBook.h"
 
 class SubscriptionClientConnection {
 public:
-	virtual ~SubscriptionClientConnection();
+	virtual ~SubscriptionClientConnection() = default;
 
-	virtual void onTrade(Trade *trade) = 0;
+	virtual void sendStockEvent(StockEvent *e) = 0;
 
-	virtual void onBook(LimitOrderBook *book) = 0;
 };
 
 #endif /* SUBSCRIPTIONCLIENTCONNECTION_H_ */

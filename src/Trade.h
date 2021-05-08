@@ -8,15 +8,18 @@
 #ifndef TRADE_H_
 #define TRADE_H_
 
+#include <string>
+
 #include "StockEvent.h"
 #include "SubscriptionClientConnection.h"
+//class SubscriptionClientConnection;
 
 class Trade : public StockEvent {
 
 public:
-	Trade(std::string &&symbol, long price, long amount);
+	Trade(std::string &&json, std::string &&symbol, long price, long amount);
 	virtual ~Trade();
-	virtual void sendByConnection(SubscriptionClientConnection *subscribtionClientConnection);
+	virtual const std::string& getJSON();
 	virtual const std::string& getSymbol();
 
 	long getAmount() const {
@@ -28,6 +31,7 @@ public:
 	}
 
 private:
+	std::string json;
 	std::string symbol;
 	long price;
 	long amount;

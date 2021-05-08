@@ -20,10 +20,12 @@
 class QuoteEngine: public SubscribtionEventHandler {
 
 public:
-	QuoteEngine(std::unique_ptr<QuoteProvider> &&quoteProvider) : quoteProvider(std::move(quoteProvider)) {}
+	QuoteEngine(std::unique_ptr<QuoteProvider> &&quoteProvider) : quoteProvider(std::move(quoteProvider)) {
+	}
 	virtual ~QuoteEngine();
 	virtual void onSubscriptionReceived(const std::string &symbol, SubscriptionClientConnection *subscriptionClientConnection);
 	virtual void onEvent(StockEvent *e);
+	virtual void connect();
 	//virtual void onConnectionDropped(SubscriptionClientConnection *subscriptionClientConnection); ????
 private:
 	std::unique_ptr<QuoteProvider> quoteProvider;
