@@ -8,8 +8,7 @@
 #ifndef SUBSCRIPTIONCLIENTCONNECTION_H_
 #define SUBSCRIPTIONCLIENTCONNECTION_H_
 
-#include "Trade.h"
-#include "LimitOrderBook.h"
+#include "StockEvent.h"
 
 class SubscriptionClientConnection {
 public:

@@ -12,6 +12,12 @@
 const char * EasyWsClientCoinBaseQuoteProvider::subcribeTemplate =
 		"{\"type\":\"subscribe\",\"product_ids\":[%s],\"channels\":[\"level2\",\"heartbeat\",{\"name\":\"ticker\",\"product_ids\":[%s]}]}";
 
+
+EasyWsClientCoinBaseQuoteProvider::EasyWsClientCoinBaseQuoteProvider(
+		std::string &&uri, EventFactory *eventFactory) :
+		uri(uri), handler(nullptr), eventFactory(eventFactory) {
+}
+
 EasyWsClientCoinBaseQuoteProvider::~EasyWsClientCoinBaseQuoteProvider() {
 	// TODO Auto-generated destructor stub
 }
@@ -20,18 +26,18 @@ bool EasyWsClientCoinBaseQuoteProvider::connect() {
 	ws.reset(WebSocket::from_url(uri));
 	auto wsPtr = ws.get();
 	connected = true;
-	std::thread getQuotes([wsPtr, this]() {
-		while (wsPtr->getReadyState() != WebSocket::CLOSED) {
+//	std::thread getQuotes([wsPtr, this]() {
+//		while (wsPtr->getReadyState() != WebSocket::CLOSED) {
+//
+//			wsPtr->poll();
+//			wsPtr->dispatch([this](const std::string &message) {
+//				std::unique_ptr<StockEvent> p( this->eventFactory->createEvent(message));
+//				this->handler->onEvent(p.get());
+//			});
+//		}
+//	});
 
-			wsPtr->poll();
-			wsPtr->dispatch([this](const std::string &message) {
-				std::unique_ptr<StockEvent> p( this->eventFactory->createEvent(message));
-				this->handler->onEvent(p.get());
-			});
-		}
-	});
-
-	return true;
+	return connected;
 }
 
 void EasyWsClientCoinBaseQuoteProvider::subcribe(
@@ -51,11 +57,6 @@ void EasyWsClientCoinBaseQuoteProvider::subcribe(
 	sprintf(msg, subcribeTemplate, symbolsInLine.c_str(),
 			symbolsInLine.c_str());
 	ws.get()->send(std::string(msg));
-}
-
-EasyWsClientCoinBaseQuoteProvider::EasyWsClientCoinBaseQuoteProvider(
-		std::string &&uri, EventFactory *eventFactory) :
-		uri(uri), handler(nullptr), eventFactory(eventFactory) {
 }
 
 void EasyWsClientCoinBaseQuoteProvider::setHandler(

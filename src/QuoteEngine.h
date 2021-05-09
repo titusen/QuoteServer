@@ -23,13 +23,13 @@ public:
 	QuoteEngine(std::unique_ptr<QuoteProvider> &&quoteProvider) : quoteProvider(std::move(quoteProvider)) {
 	}
 	virtual ~QuoteEngine();
-	virtual void onSubscriptionReceived(const std::string &symbol, SubscriptionClientConnection *subscriptionClientConnection);
+	virtual void onSubscriptionReceived(std::string &&symbol, std::shared_ptr<SubscriptionClientConnection> subscriptionClientConnection);
 	virtual void onEvent(StockEvent *e);
 	virtual void connect();
 	//virtual void onConnectionDropped(SubscriptionClientConnection *subscriptionClientConnection); ????
 private:
 	std::unique_ptr<QuoteProvider> quoteProvider;
-	std::unordered_map<std::string, std::vector<SubscriptionClientConnection*>> symbolToConnections;
+	std::unordered_map<std::string, std::vector<std::shared_ptr<SubscriptionClientConnection>>> symbolToConnections;
 };
 
 #endif /* QUOTEENGINE_H_ */

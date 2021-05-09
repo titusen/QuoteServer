@@ -11,9 +11,9 @@ QuoteEngine::~QuoteEngine() {
 	// TODO Auto-generated destructor stub
 }
 
-void QuoteEngine::onSubscriptionReceived(const
-		std::string &symbol,
-		SubscriptionClientConnection *subscriptionClientConnection) {
+void QuoteEngine::onSubscriptionReceived(
+		std::string &&symbol,
+		std::shared_ptr<SubscriptionClientConnection> subscriptionClientConnection) {
 	symbolToConnections[symbol].push_back(subscriptionClientConnection);
 }
 

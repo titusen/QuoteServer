@@ -33,7 +33,7 @@ typedef Pipeline<folly::IOBufQueue&, std::string> QuoteClientPipeline;
 class QuoteClientHandler: public HandlerAdapter<std::string> {
 public:
     void read(Context*, std::string msg) override {
-        std::cout << "received from queue: " << msg;
+        std::cout << "received from QuoteServer: " << msg;
     }
     void readException(Context* ctx, exception_wrapper e) override {
         std::cout << folly::exceptionStr(e) << std::endl;
@@ -44,7 +44,6 @@ public:
         close(ctx);
     }
 
-public:
 	virtual ~QuoteClientHandler() = default;
 	void start();
 	void stop();
