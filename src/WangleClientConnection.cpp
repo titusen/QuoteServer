@@ -6,7 +6,9 @@
  */
 
 #include "WangleClientConnection.h"
+#include <iostream>
 
 void WangleClientConnection::sendStockEvent(StockEvent *e) {
-	context->fireWrite(e->getJSON()).get();
+	std::cout << "wangle send\n";
+	context->fireWrite(e->getJSON() + "\n").get();
 }

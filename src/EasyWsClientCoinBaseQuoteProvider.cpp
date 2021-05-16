@@ -26,21 +26,21 @@ bool EasyWsClientCoinBaseQuoteProvider::connect() {
 	ws.reset(WebSocket::from_url(uri));
 	auto wsPtr = ws.get();
 	connected = true;
-//	std::thread getQuotes([wsPtr, this]() {
-//		while (wsPtr->getReadyState() != WebSocket::CLOSED) {
-//
-//			wsPtr->poll();
-//			wsPtr->dispatch([this](const std::string &message) {
-//				std::unique_ptr<StockEvent> p( this->eventFactory->createEvent(message));
+	std::thread getQuotes([wsPtr, this]() {
+		while (wsPtr->getReadyState() != WebSocket::CLOSED) {
+
+			wsPtr->poll();
+			wsPtr->dispatch([this](const std::string &message) {
+				std::unique_ptr<StockEvent> p( this->eventFactory->createEvent(message));
 //				this->handler->onEvent(p.get());
-//			});
-//		}
-//	});
+			});
+		}
+	});
 
 	return connected;
 }
 
-void EasyWsClientCoinBaseQuoteProvider::subcribe(
+void EasyWsClientCoinBaseQuoteProvider::subscribe(
 		const std::vector<std::string> &symbols) {
 	if (!connected) {
 		connect();

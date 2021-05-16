@@ -15,7 +15,7 @@ class SimpleStockEventFactoryImpl : public EventFactory {
 public:
 	virtual ~SimpleStockEventFactoryImpl() = default;
 	virtual StockEvent* createEvent(const std::string &msg) {
-		return new Trade(std::string(msg), "a symbol", 100, 1000);
+		return new Trade(std::string(msg), "ETH-USD", 100, 1000);
 	}
 };
 

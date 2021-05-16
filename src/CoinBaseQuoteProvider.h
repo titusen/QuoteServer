@@ -11,6 +11,7 @@
 #include <websocketpp/client.hpp>
 #include <websocketpp/config/asio_no_tls_client.hpp>
 #include "QuoteProvider.h"
+#include <thread>
 
 typedef websocketpp::client<websocketpp::config::asio_client> client;
 
@@ -20,7 +21,7 @@ public:
 	CoinBaseQuoteProvider(std::string &&uri);
 	virtual ~CoinBaseQuoteProvider();
 	virtual bool connect();
-	virtual void subcribe(const std::vector<std::string> &symbols);
+	virtual void subscribe(const std::vector<std::string> &symbols);
 	virtual void setHandler(SubscribtionEventHandler *handler);
 
 	SubscribtionEventHandler* getHandler() {
@@ -36,6 +37,8 @@ private:
     std::string uri;
     SubscribtionEventHandler *handler;
     bool connected = false;
+    client::connection_ptr connection;
+    std::thread conThread;
 };
 
 #endif /* COINBASEQUOTEPROVIDER_H_ */

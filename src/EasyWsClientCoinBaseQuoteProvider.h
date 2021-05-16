@@ -19,7 +19,7 @@ public:
 	EasyWsClientCoinBaseQuoteProvider(std::string &&uri, EventFactory *factory);
 	virtual ~EasyWsClientCoinBaseQuoteProvider();
 	virtual bool connect();
-	virtual void subcribe(const std::vector<std::string> &symbols);
+	virtual void subscribe(const std::vector<std::string> &symbols);
 	virtual void setHandler(SubscribtionEventHandler *handler);
 private:
 	static const char *subcribeTemplate;

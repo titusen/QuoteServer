@@ -20,6 +20,9 @@ public:
 	void start();
 	void subscribe(Context* context, std::string &&symbol);
 	void stop();
+	QuoteEngine* getQuoteEngine() {
+		return quoteEngine.get();
+	}
 	virtual ~QuoteServer() = default;
 private:
 	int port;

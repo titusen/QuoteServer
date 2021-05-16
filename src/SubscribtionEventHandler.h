@@ -3,10 +3,12 @@
 
 #include "StockEvent.h"
 
+#include <memory>
+
 class SubscribtionEventHandler {
 public:
 	virtual ~SubscribtionEventHandler() = default;
-	virtual void onEvent(StockEvent *e) = 0;
+	virtual void onEvent(std::shared_ptr<StockEvent> e) = 0;
 };
 
 #endif /* SUBSCRIBTIONEVENTHANDLER_H_ */

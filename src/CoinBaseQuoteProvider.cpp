@@ -35,7 +35,7 @@ bool CoinBaseQuoteProvider::connect() {
         websocketClient.set_message_handler(bind(&on_message, this,::_1,::_2));
 
         websocketpp::lib::error_code ec;
-        client::connection_ptr con = websocketClient.get_connection(uri, ec);
+        connection = websocketClient.get_connection(uri, ec);
         if (ec) {
             std::cout << "could not create connection because: " << ec.message() << std::endl;
             return 0;
@@ -43,12 +43,13 @@ bool CoinBaseQuoteProvider::connect() {
 
         // Note that connect here only requests a connection. No network messages are
         // exchanged until the event loop starts running in the next line.
-        websocketClient.connect(con);
+        websocketClient.connect(connection);
 
         // Start the ASIO io_service run loop
         // this will cause a single connection to be made to the server. c.run()
         // will exit when this connection is closed.
-        websocketClient.run();
+        conThread = std::thread([this]{this->websocketClient.run();});
+
     } catch (websocketpp::exception const & e) {
         std::cout << e.what() << std::endl;
     }
@@ -56,15 +57,15 @@ bool CoinBaseQuoteProvider::connect() {
     return true;
 }
 
-void CoinBaseQuoteProvider::subcribe(const std::vector<std::string> &symbols) {
+void CoinBaseQuoteProvider::subscribe(const std::vector<std::string> &symbols) {
 	if (!connected) {
 		connect();
 	}
 	std::string payload(subcribeTemplate);
-	websocketpp::lib::error_code ec;
-	websocketpp::connection_hdl hdl;
+//	websocketpp::lib::error_code ec;
 
-//	websocketClient.send(hdl, payload, ec);
+
+	connection->send(payload);
 
 }
 
